@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="new server">
+
+    <!-- Enable features -->
+    <featureManager>
+        <feature>jaxrs-2.0</feature>
+		<feature>jpa-2.1</feature>
+    </featureManager>
+   
+    <!-- To access this server from a remote client add a host attribute to the following element, e.g. host="*" -->
+    <httpEndpoint id="defaultHttpEndpoint"
+                  httpPort="9081"
+                  httpsPort="9444" />
+
+    <dataSource id="DefaultDataSource" jndiName="jdbc/PlantsByWebSphereDataSource">
+        <jdbcDriver libraryRef="DerbyLib"/>
+        <properties.derby.embedded databaseName="${server.config.dir}/resources/databases/PLANTSDB" createDatabase="create"/>
+    </dataSource>
+	<dataSource id="DefaultNONJTADataSource" jndiName="jdbc/PlantsByWebSphereDataSourceNONJTA">
+        <jdbcDriver libraryRef="DerbyLib"/>
+        <properties.derby.embedded databaseName="${server.config.dir}/resources/databases/PLANTSDB" createDatabase="create"/>
+    </dataSource>
+
+    <library id="DerbyLib">
+        <fileset dir="${server.config.dir}/resources/lib"/>
+    </library>
+
+			  
+				  
+</server>
