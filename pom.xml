@@ -1,0 +1,25 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>pbw</groupId>
+    <artifactId>pbw-images</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+    <name>Image service for the Plants by WebSphere sample application</name>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <distribution>repo</distribution>
+            <url>https://github.com/WASdev/sample.mono-to-ms.pbw-images/blob/master/LICENSE</url>
+        </license>
+    </licenses>
+    
+    <modules>
+        <module>image-app</module>
+        <module>image-wlpcfg</module>
+    </modules>
+
+
+</project>
