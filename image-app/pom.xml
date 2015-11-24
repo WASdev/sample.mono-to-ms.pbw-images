@@ -14,17 +14,24 @@
   		<scope>provided</scope>
   	</dependency>
   	<dependency>
-  		<groupId>javax.json</groupId>
-  		<artifactId>javax.json-api</artifactId>
-  		<version>1.0</version>
-  		<scope>provided</scope>
-  	</dependency>
-  	<dependency>
   		<groupId>org.eclipse.persistence</groupId>
   		<artifactId>javax.persistence</artifactId>
   		<version>2.1.0</version>
   		<scope>provided</scope>
   	</dependency>
+  	<!-- Test dependencies -->
+     <dependency>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+          <version>4.12</version>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-rs-client</artifactId>
+          <version>3.1.1</version>
+          <scope>test</scope>
+      </dependency>
   </dependencies>
   
 	<build>
@@ -47,6 +54,24 @@
 					<packagingExcludes>javax*</packagingExcludes>
 				</configuration>
 			</plugin>
+            <!-- Plugin to run unit tests and not run the FVT tests which require a Liberty server instance -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.18.1</version>
+                <executions>
+                    <execution>
+                        <phase>test</phase>
+                        <id>default-test</id>
+                        <configuration>
+                            <includes>
+                                <include>**/unit/**</include>
+                            </includes>
+                            <reportsDirectory>${project.build.directory}/test-reports/unit</reportsDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>

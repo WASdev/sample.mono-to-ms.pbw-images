@@ -8,12 +8,26 @@
   <description>Liberty build for the PbW images service</description>
   
   <properties>
+	  <!-- Test configuration properties -->
+  	  <devtestProps>${basedir}/../devtest.properties</devtestProps>
+  	  
+  	  <!-- build/packaging configuration properties -->
       <wlpUserDir>${basedir}</wlpUserDir>
       <wlpServerName>pbw-images</wlpServerName>
       <wlpServerDir>${wlpUserDir}/servers/${wlpServerName}</wlpServerDir>
   </properties>
 
-    <dependencies>
+   <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-client</artifactId>
+            <version>3.1.1</version>
+        </dependency>
         <dependency>
             <groupId>pbw</groupId>
             <artifactId>image-app</artifactId>
@@ -24,6 +38,42 @@
   
     <build>
         <plugins>
+            <!-- Read file(s) containing development and test properties -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>1.0-alpha-2</version>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>read-project-properties</goal>
+                        </goals>
+                        <configuration>
+                            <files>
+                                <file>${devtestProps}</file>
+                            </files>
+                    </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <!-- Enable compile plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.3</version>
+                <executions>
+                    <execution>
+                        <id>test-compile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         	<!-- Copy the database into the resources directory -->
         	<plugin>
         		<groupId>org.apache.maven.plugins</groupId>
@@ -95,7 +145,64 @@
                         <type>webProfile7</type>
                     </install>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>start-server</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>start-server</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>stop-server</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop-server</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.18.1</version>
+                <executions>
+                    <execution>
+                        <phase>integration-test</phase>
+                        <id>integration-test</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                        <configuration>
+                            <includes>
+                                <include>**/fvt/**</include>
+                            </includes>
+                            <systemPropertyVariables>
+                                <liberty.test.port>${libertyPort}</liberty.test.port>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>verify-results</id>
+                        <goals>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <summaryFile>${project.build.directory}/test-reports/failsafe-summary.xml</summaryFile>
+                    <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+                </configuration>
             </plugin>
         </plugins>
     </build>
+	  <reporting>
+	    <plugins>
+	      <plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-surefire-report-plugin</artifactId>
+	        <version>2.19</version>
+	      </plugin>
+	    </plugins>
+	  </reporting>
 </project>
